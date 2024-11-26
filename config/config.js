@@ -1,5 +1,6 @@
-const dotenv = require('dotenv').config()
-const MONGO_URL = process.env.MONGO_URL
+const dotenv = require("dotenv").config();
+const MONGO_URL = process.env.MONGO_URL;
+const JWT_SECRET = process.env.JWT_SECRET
 module.exports = {
-    MONGO_URL
-}
+  MONGO_URL,JWT_SECRET
+};
