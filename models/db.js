@@ -11,11 +11,11 @@ const UserSchema = new Schema({
   passwordHash: { type: String, required: true },
 });
 const ExpenseSchema = new Schema({
-  userId: { type: ObjectId, ref: "User", required: true },
   amount: Number,
   category: String,
   date: { type: Date, default: Date.now },
   description: String,
+  user: { type: ObjectId, ref: 'Users', required: true }  // Changed from userId
 });
 const UserModel = mongoose.model("Users", UserSchema);
 const ExpenseModel = mongoose.model("Expense", ExpenseSchema);

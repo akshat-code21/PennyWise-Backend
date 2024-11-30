@@ -18,7 +18,7 @@ authRouter.post("/signup", async (req, res) => {
       });
       return;
     }
-    const hash = bcrypt.hash(password, saltRounds);
+    const hash = await bcrypt.hash(password, saltRounds);
     await UserModel.create({
       name,
       email,
@@ -53,7 +53,7 @@ authRouter.post("/signin", async (req, res) => {
     }
     const token = jwt.sign(
       {
-        id: currentUser._id,
+        userId: currentUser._id,
       },
       JWT_SECRET
     );
