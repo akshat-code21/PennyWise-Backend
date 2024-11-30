@@ -8,11 +8,11 @@ const { UserModel } = require("../models/db");
 const { JWT_SECRET } = require("../config/config");
 const jwt = require("jsonwebtoken");
 const userPayloadSchema = z.object({
-  email: z.string.email(),
-  password: z.password().min(8).max(14),
+  email: z.string().email(),
+  password: z.password().min(8).max(14).regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/, 'Password must contain uppercase, lowercase, number and special character')
 });
 const signinPayloadSchema = z.object({
-  email: z.string.email(),
+  email: z.string().email(),
   password: z.password().min(8).max(14),
 });
 authRouter.post("/signup", async (req, res) => {
