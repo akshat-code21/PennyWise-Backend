@@ -1,4 +1,5 @@
 const express = require("express");
+const z = require("zod");
 const bcrypt = require("bcrypt");
 const saltRounds = 5;
 const { Router } = require("express");
@@ -6,9 +7,24 @@ const authRouter = Router();
 const { UserModel } = require("../models/db");
 const { JWT_SECRET } = require("../config/config");
 const jwt = require("jsonwebtoken");
+const userPayloadSchema = z.object({
+  email: z.string.email(),
+  password: z.password().min(8).max(14),
+});
+const signinPayloadSchema = z.object({
+  email: z.string.email(),
+  password: z.password().min(8).max(14),
+});
 authRouter.post("/signup", async (req, res) => {
   try {
     const { name, email, password } = req.body;
+    const validated = userPayloadSchema.safeParse(req.body);
+    if (!validated.success) {
+      res.status(400).json({
+        message: validated.error.message,
+      });
+      return;
+    }
     const duplicateEmail = await UserModel.findOne({
       email: email,
     });
@@ -35,6 +51,13 @@ authRouter.post("/signup", async (req, res) => {
 authRouter.post("/signin", async (req, res) => {
   try {
     const { email, password } = req.body;
+    const validated = signinPayloadSchema.safeParse(req.body);
+    if (!validated.success) {
+      res.status(400).json({
+        message: validated.error.message,
+      });
+      return;
+    }
     const currentUser = await UserModel.findOne({
       email: email,
     });

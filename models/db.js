@@ -17,9 +17,17 @@ const ExpenseSchema = new Schema({
   description: String,
   user: { type: ObjectId, ref: 'Users', required: true }  // Changed from userId
 });
+const InsightsSchema = new Schema({
+  user: { type: ObjectId, ref: 'Users', required: true },
+  type: String,
+  data: Object,
+  generatedAt: { type: Date, default: Date.now }
+});
 const UserModel = mongoose.model("Users", UserSchema);
 const ExpenseModel = mongoose.model("Expense", ExpenseSchema);
+const InsightsModel = mongoose.model("Insights", InsightsSchema);
 module.exports = {
   UserModel,
   ExpenseModel,
+  InsightsModel,
 };

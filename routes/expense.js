@@ -4,6 +4,12 @@ const expenseRouter = Router();
 const { userMiddleWare } = require("../middlewares/user");
 const { UserModel } = require("../models/db");
 const { ExpenseModel } = require("../models/db");
+const {z} = require('zod');
+const expensePayloadSchema = z.object({
+  amount : z.number(),
+  category : z.string(),
+  description : z.string().maxLength(20)
+})
 expenseRouter.get("/", userMiddleWare, async (req, res) => {
   try {
     const userId = req.userId;
@@ -23,6 +29,14 @@ expenseRouter.get("/", userMiddleWare, async (req, res) => {
 expenseRouter.post("/", userMiddleWare, async (req, res) => {
   try {
     const { amount, category, description } = req.body;
+    const validated = expensePayloadSchema.safeParse(req.body);
+    if(!validated.success)
+    {
+      res.status(400).json({
+        message : validated.error.message
+      })
+      return;
+    }
     await ExpenseModel.create({
       amount,
       category,
@@ -42,6 +56,14 @@ expenseRouter.post("/", userMiddleWare, async (req, res) => {
 expenseRouter.put("/:id", userMiddleWare, async (req, res) => {
   try {
     const { amount, category, description } = req.body;
+    const validated = expensePayloadSchema.safeParse(req.body);
+    if(!validated.success)
+    {
+      res.status(400).json({
+        message : validated.error.message
+      })
+      return;
+    }
     const expenseId = req.params.id;
     const expense = await ExpenseModel.updateOne(
       {
